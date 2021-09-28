@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+service DataService {
+  rpc getStudents(StudentRequest) returns (StudentResponse) {}
+  rpc getCourses(CourseRequest) returns (CourseResponse) {}
+}
+message StudentRequest{
+
+}
+
+message CourseRequest{
+
+}
+message Student {
+  string studentId = 1;
+  string firstName = 2;
+  string secondName = 3;
+  string department = 4;
+  repeated string completedCourseList = 5;
+}
+
+
+message StudentResponse{
+  repeated Student studentList= 1;
+}
+
+message Course {
+  string courseId = 1;
+  string pfName = 2;
+  string name = 3;
+  repeated string prerequisites = 4;
+}
+
+message CourseResponse{
+  repeated Course courseList = 1;
+}
