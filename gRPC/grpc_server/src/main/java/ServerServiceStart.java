@@ -2,10 +2,9 @@ import io.grpc.ServerBuilder;
 
 import java.io.IOException;
 
-public class Server_S {
+public class ServerServiceStart {
     private static final int PORT = 9091;
     private io.grpc.Server server;
-
     public void start() throws IOException {
         server = ServerBuilder.forPort(PORT)
                 .addService(new ServerServiceImpl())
@@ -16,12 +15,9 @@ public class Server_S {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
-
-    public static void main(String[] args)
-            throws InterruptedException, IOException {
-        Server_S server = new Server_S();
+    public static void main(String[] args) throws InterruptedException, IOException {
+        ServerServiceStart server = new ServerServiceStart();
         server.start();
     }
 }

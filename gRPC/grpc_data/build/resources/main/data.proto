@@ -2,7 +2,16 @@ syntax = "proto3";
 
 service DataService {
   rpc getStudents(StudentRequest) returns (StudentResponse) {}
+  rpc addStudent(Student) returns (IsSuccess) {}
+  rpc deleteStudent(deleteNum) returns (IsSuccess) {}
+
   rpc getCourses(CourseRequest) returns (CourseResponse) {}
+  rpc addCourse(Course) returns (IsSuccess) {}
+  rpc deleteCourse(deleteNum) returns (IsSuccess) {}
+
+  rpc getEnrollment(EnrollmentRequest) returns (EnrollmentResponse) {}
+  rpc enroll(Enrollment) returns (IsEnroll) {}
+
 }
 message StudentRequest{
 
@@ -11,6 +20,11 @@ message StudentRequest{
 message CourseRequest{
 
 }
+
+message EnrollmentRequest{
+
+}
+
 message Student {
   string studentId = 1;
   string firstName = 2;
@@ -33,4 +47,27 @@ message Course {
 
 message CourseResponse{
   repeated Course courseList = 1;
+}
+
+message Enrollment{
+  string studentId = 1;
+  string courseId = 2;
+}
+
+message EnrollmentResponse{
+  repeated Enrollment enrollmentList = 1;
+}
+
+message IsSuccess{
+  bool IsSuccess = 1;
+}
+
+message deleteNum{
+  string delNum = 1;
+}
+
+message IsEnroll{
+  bool isStudentExist = 1;
+  bool isCourseExist = 2;
+  bool isPrerequisitesDone = 3;
 }

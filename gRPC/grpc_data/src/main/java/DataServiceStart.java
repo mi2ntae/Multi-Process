@@ -3,10 +3,9 @@ import io.grpc.ServerBuilder;
 
 import java.io.IOException;
 
-public class Data_S {
+public class DataServiceStart {
     private static final int PORT = 9090;
     private Server server;
-
     public void start() throws IOException {
         server = ServerBuilder.forPort(PORT)
                 .addService(new DataServiceImpl())
@@ -17,10 +16,8 @@ public class Data_S {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args)
-            throws InterruptedException, IOException {
-        Data_S server = new Data_S();
+    public static void main(String[] args) throws InterruptedException, IOException {
+        DataServiceStart server = new DataServiceStart();
         server.start();
     }
 }
