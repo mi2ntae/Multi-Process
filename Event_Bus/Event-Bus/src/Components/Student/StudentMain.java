@@ -45,9 +45,10 @@ public class StudentMain {
 					printLogEvent("Get", event);
 					eventBus.sendEvent(new Event(EventId.ClientOutput, deleteStudent(studentsList, event.getMessage())));
 					break;
-				case CheckId:
+				case CheckStudentId:
 					printLogEvent("Get", event);
-					eventBus.sendEvent(new Event(EventId.CheckStudentResult, checkStudentId(studentsList, event.getMessage())));
+					if(checkStudentId(studentsList, event.getMessage()).equals("false")) eventBus.sendEvent(new Event(EventId.ClientOutput, "There is no Student"));
+					else eventBus.sendEvent(new Event(EventId.CheckCourseId, checkStudentId(studentsList, event.getMessage())));
 					break;
 				case QuitTheSystem:
 					printLogEvent("Get", event);
@@ -62,14 +63,17 @@ public class StudentMain {
 	}
 	private static String checkStudentId(StudentComponent studentsList, String message) {
 		String studentId = message.split(" ")[0];
+		String courseId = message.split(" ")[1];
 		if (studentsList.isRegisteredStudent(studentId)) {
-			String rValue = studentId;
-			for(String completeCourse: studentsList.getStudentById(studentId).getCompletedCourses()) {
-				rValue += " "+completeCourse;
+			String rValue = studentId+"\r\n";
+			if(studentsList.getStudentById(studentId).getCompletedCourses().size() == 0) rValue += "nothing";
+			else {
+				for(String completeCourse: studentsList.getStudentById(studentId).getCompletedCourses()) {
+					rValue += completeCourse+" ";
+				}
 			}
-			return rValue;
-		}
-		else return "false";
+			return rValue+"\r\n"+courseId;
+		} else return "false";
 	}
 	private static String registerStudent(StudentComponent studentsList, String message) {
 		Student  student = new Student(message);

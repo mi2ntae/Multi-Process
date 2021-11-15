@@ -44,9 +44,10 @@ public class CourseMain {
 					printLogEvent("Get", event);
 					eventBus.sendEvent(new Event(EventId.ClientOutput, deleteCourse(coursesList, event.getMessage())));
 					break;
-				case CheckId:
+				case CheckCourseId:
 					printLogEvent("Get", event);
-					eventBus.sendEvent(new Event(EventId.CheckCourseResult, checkCourseId(coursesList, event.getMessage())));
+					if(checkCourseId(coursesList, event.getMessage()).equals("false")) eventBus.sendEvent(new Event(EventId.ClientOutput, "There is no Course"));
+					else eventBus.sendEvent(new Event(EventId.CheckIdResult, checkCourseId(coursesList, event.getMessage())));
 					break;
 				case QuitTheSystem:
 					eventBus.unRegister(componentId);
@@ -59,15 +60,17 @@ public class CourseMain {
 		}
 	}
 	private static String checkCourseId(CourseComponent coursesList, String message) {
-		String courseId = message.split(" ")[1];
+		String courseId = message.split("\r\n")[2].strip();
 		if (coursesList.isRegisteredCourse(courseId)) {
-			String rValue = courseId;
-			for(String prerequisite: coursesList.getCourseById(courseId).getPrerequisiteCoursesList()) {
-				rValue += " "+prerequisite;
+			String rValue = message+"\r\n";
+			if(coursesList.getCourseById(courseId).getPrerequisiteCoursesList().size() == 0) rValue += "nothing";
+			else {
+				for(String prerequisite: coursesList.getCourseById(courseId).getPrerequisiteCoursesList()) {
+					rValue += prerequisite+" ";
+				}
 			}
 			return rValue;
-		}
-		else return "false";
+		} else return "false";
 	}
 	private static String registerCourse(CourseComponent coursesList, String message) {
 		Course course = new Course(message);

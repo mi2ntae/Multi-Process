@@ -51,8 +51,8 @@ public class ClientInputMain {
 					printLogSend(EventId.DeleteCourse);
 					break;
 				case "7":
-					eventBus.sendEvent(new Event(EventId.CheckId, enroll()));
-					printLogSend(EventId.CheckId);
+					eventBus.sendEvent(new Event(EventId.CheckStudentId, enroll()));
+					printLogSend(EventId.CheckStudentId);
 					break;
 				case "8":
 					eventBus.sendEvent(new Event(EventId.ListEnrollments, null));

@@ -1,4 +1,4 @@
-package Components;
+package Components.Enrollment;
 
 import java.util.StringTokenizer;
 

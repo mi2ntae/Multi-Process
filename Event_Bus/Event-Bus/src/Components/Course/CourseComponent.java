@@ -9,8 +9,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import Components.Student.Student;
-
 public class CourseComponent {
     protected ArrayList<Course> vCourse;
 

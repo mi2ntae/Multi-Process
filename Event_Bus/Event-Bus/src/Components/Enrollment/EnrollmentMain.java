@@ -2,7 +2,7 @@
  * Copyright(c) 2021 All rights reserved by Jungho Kim in MyungJi University 
  */
 
-package Components;
+package Components.Enrollment;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,7 +15,6 @@ import Framework.EventQueue;
 import Framework.RMIEventBus;
 
 public class EnrollmentMain {
-	private static String studentCheck = "", courseCheck = "";
 	public static void main(String args[]) throws FileNotFoundException, IOException, NotBoundException {
 		RMIEventBus eventBus = (RMIEventBus) Naming.lookup("//127.0.0.1:1099/EventBus");
 		long componentId = eventBus.register();
@@ -33,17 +32,10 @@ public class EnrollmentMain {
 			EventQueue eventQueue = eventBus.getEventQueue(componentId);
 			for (int i = 0; i < eventQueue.getSize(); i++) {
 				event = eventQueue.getEvent();
-				System.out.println(event.getEventId());
 				switch (event.getEventId()) {
-				case CheckStudentResult:
+				case CheckIdResult:
 					printLogEvent("Get", event);
-					studentCheck = event.getMessage();
-					eventBus.sendEvent(new Event(EventId.ClientOutput, enroll(enrollmentList)));
-					break;
-				case CheckCourseResult:
-					printLogEvent("Get", event);
-					courseCheck = event.getMessage();
-					eventBus.sendEvent(new Event(EventId.ClientOutput, enroll(enrollmentList)));
+					eventBus.sendEvent(new Event(EventId.ClientOutput, enroll(enrollmentList, event.getMessage())));
 					break;
 				case ListEnrollments:
 					printLogEvent("Get", event);
@@ -59,17 +51,21 @@ public class EnrollmentMain {
 			}
 		}
 	}
-	private static String enroll(EnrollmentComponent enrollmentList) {
-		if(studentCheck.equals("") || courseCheck.equals("")) return "Checking...";
-		if(studentCheck.equals("false")) return "Student doesn't exist";
-		if(courseCheck.equals("false")) return "Course doesn't exist";
-		String[] studentInfo = studentCheck.split(" ");
-		String[] courseInfo = courseCheck.split(" ");
+	private static String enroll(EnrollmentComponent enrollmentList, String message) {
+		String[] mes = message.split("\r\n");
+		String studentId = mes[0].strip();
+		String courseId = mes[2].strip();
+		String[] studentInfo = mes[1].split(" ");
+		String[] courseInfo = mes[3].split(" ");
+		if(courseInfo.equals("false")) {
+			enrollmentList.insertEnrollment(studentId+" "+courseId);
+			return "Enroll Success";
+		}
 		boolean isCompleted = true;
 		for(int i = 1; i < courseInfo.length; i++) {
 			boolean isCourseCompleted = false;
 			for(int j = 1; j < studentInfo.length; j++) {
-				if(courseInfo[i].equals(studentInfo[j])) isCourseCompleted = true;
+				if(courseInfo[i].strip().equals(studentInfo[j].strip())) isCourseCompleted = true;
 			}
 			if(!isCourseCompleted) {
 				isCompleted = false;
@@ -77,7 +73,7 @@ public class EnrollmentMain {
 			}
 		}
 		if(isCompleted) {
-			enrollmentList.insertEnrollment(studentCheck+" "+courseCheck);
+			enrollmentList.insertEnrollment(studentId+" "+courseId);
 			return "Enroll Success";
 		} else {
 			return "Student didn't complete the prerequisites";
@@ -86,6 +82,7 @@ public class EnrollmentMain {
 	}
 	private static String makeEnrollmentList(EnrollmentComponent enrollmentList) {
 		String returnString = "";
+		if(enrollmentList.vEnrollment.size() == 0) return "No element in Enrollment List";
 		for (int j = 0; j < enrollmentList.vEnrollment.size(); j++) {
 			returnString += enrollmentList.getEnrollmentList().get(j).getString() + "\n";
 		}

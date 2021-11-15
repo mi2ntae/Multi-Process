@@ -2,13 +2,15 @@
  * Copyright(c) 2021 All rights reserved by Jungho Kim in MyungJi University 
  */
 
-package Components;
+package Components.Enrollment;
 
 import java.util.ArrayList;
 
 public class EnrollmentComponent {
-	protected ArrayList<Enrollment> vEnrollment = new ArrayList<Enrollment>();
-
+	protected ArrayList<Enrollment> vEnrollment;
+	public EnrollmentComponent() {
+		this.vEnrollment = new ArrayList<Enrollment>();
+	}
 	public ArrayList<Enrollment> getEnrollmentList() {
 		return vEnrollment;
 	}
